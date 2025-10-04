@@ -1,0 +1,522 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Student Portal — Functional Demo</title>
+  <style>
+    :root{
+      --bg: #f5f7fb;
+      --card:#ffffff;
+      --muted:#6b7280;
+      --accent:#6366f1;
+      --sidebar:#1f2937;
+      --glass: rgba(255,255,255,0.6);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:var(--bg);
+      color:#0f172a;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      display:flex;
+      min-height:100vh;
+    }
+
+
+/* layout */
+.sidebar{
+  width:240px;
+  background:linear-gradient(180deg,var(--sidebar),#111827);
+  color:white;
+  padding:22px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+.brand{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+.brand .logo{
+  width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,#8b5cf6,#06b6d4);display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:18px;
+}
+.brand h1{font-size:18px;margin:0}
+nav{display:flex;flex-direction:column;gap:6px}
+nav button{
+  background:transparent;border:none;color:inherit;text-align:left;padding:10px;border-radius:8px;cursor:pointer;font-size:15px;
+}
+nav button:hover{background:rgba(255,255,255,0.06)}
+nav button.active{background:rgba(0,0,0,0.15);font-weight:600}
+
+.main{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  padding:20px;
+}
+
+header.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.search-wrap{display:flex;align-items:center;gap:10px}
+.search{
+  display:flex;align-items:center;background:var(--card);padding:8px;border-radius:10px;gap:8px;box-shadow:0 1px 2px rgba(16,24,40,0.04);
+  min-width:320px;
+}
+.search input{border:0;outline:none;background:transparent;font-size:14px;width:100%}
+.controls{display:flex;align-items:center;gap:10px}
+.btn{
+  background:var(--accent);color:white;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600;
+}
+.icon-btn{background:transparent;border:1px solid rgba(15,23,42,0.06);padding:8px;border-radius:8px;cursor:pointer}
+
+/* content grid */
+.content-grid{
+  display:grid;
+  grid-template-columns:1fr 340px;
+  gap:18px;
+  align-items:start;
+}
+
+/* left column */
+.panel{background:var(--card);padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(15,23,42,0.05);border:1px solid rgba(15,23,42,0.04)}
+.row{display:flex;gap:12px;align-items:center}
+.cards{display:flex;gap:12px}
+.card{flex:1;padding:14px;border-radius:10px;background:linear-gradient(180deg, rgba(99,102,241,0.07), rgba(99,102,241,0.02));}
+.card h3{margin:0;font-size:13px;color:var(--muted)}
+.card p{margin:6px 0 0;font-size:22px;font-weight:700}
+
+/* lists */
+.list {display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.course-item, .msg-item, .file-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;background:linear-gradient(180deg,#fff,#fbfbff);border:1px solid rgba(15,23,42,0.03)}
+.course-meta{display:flex;gap:12px;align-items:center}
+.progress{height:8px;border-radius:6px;background:#e6e9f8;overflow:hidden;width:140px}
+.progress > i{display:block;height:100%;background:linear-gradient(90deg,#6366f1,#06b6d4);}
+
+/* grades table */
+table{width:100%;border-collapse:collapse;margin-top:8px}
+th,td{padding:10px;border-bottom:1px dashed rgba(15,23,42,0.04);text-align:left;font-size:14px}
+td .grade-input{width:72px;padding:6px;border-radius:6px;border:1px solid rgba(15,23,42,0.06)}
+
+/* messages area */
+.chat{
+  height:300px;overflow:auto;padding:10px;border-radius:8px;background:linear-gradient(180deg,#fbfbff,#fff);border:1px solid rgba(15,23,42,0.03)
+}
+.bubble{max-width:78%;padding:8px 12px;border-radius:10px;margin-bottom:8px}
+.from-me{background:linear-gradient(90deg,#6366f1,#06b6d4);color:white;margin-left:auto}
+.from-them{background:#f1f5f9;color:#0f172a;margin-right:auto}
+
+/* right column widgets */
+.widget {display:flex;flex-direction:column;gap:12px}
+.small{font-size:13px;color:var(--muted)}
+
+/* schedule */
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.day{padding:8px;border-radius:8px;background:linear-gradient(180deg,#fff,#fbfbff);text-align:center;font-size:13px}
+.today{box-shadow:0 6px 16px rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.16)}
+
+/* responsive */
+@media (max-width:980px){
+  .content-grid{grid-template-columns:1fr; }
+  .sidebar{display:none}
+  .main{padding:12px}
+  .search{min-width:160px}
+}
+
+/* dark theme */
+body.dark{
+  --bg:#0b1220;
+  --card:#0f1724;
+  --muted:#9aa4b2;
+  --accent:#7c3aed;
+  --sidebar:#0b1220;
+  color:#e6eef8;
+}
+body.dark .card{background:linear-gradient(180deg, rgba(124,58,237,0.06), rgba(7,10,20,0.02))}
+body.dark .course-item, body.dark .msg-item, body.dark .file-item{background:linear-gradient(180deg,#071124,#081628)}
+body.dark table th, body.dark table td{border-bottom:1px dashed rgba(255,255,255,0.03)}
+
+
+  </style>
+</head>
+<body>
+  <aside class="sidebar" aria-label="Primary">
+    <div class="brand">
+      <div class="logo">SP</div>
+      <div>
+        <h1>Student Portal</h1>
+        <div class="small">Functional Demo</div>
+      </div>
+    </div>
+
+
+<nav id="nav">
+  <button class="active" data-view="dashboard">Dashboard</button>
+  <button data-view="courses">Courses</button>
+  <button data-view="grades">Grades</button>
+  <button data-view="schedule">Schedule</button>
+  <button data-view="messages">Messages</button>
+  <button data-view="files">Files</button>
+  <button data-view="profile">Profile</button>
+</nav>
+
+<div style="margin-top:auto">
+  <div class="small" style="margin-bottom:8px">Quick actions</div>
+  <button id="clearStorage" class="icon-btn" style="width:100%;padding:10px;border-radius:8px;background:transparent;color:white;border:1px solid rgba(255,255,255,0.06)">Reset demo data</button>
+</div>
+
+
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="search-wrap">
+        <div class="search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="opacity:.6"><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="1.5"/></svg>
+          <input id="globalSearch" placeholder="Search courses, messages, files..." />
+        </div>
+      </div>
+
+  <div class="controls">
+    <button id="themeToggle" class="icon-btn" title="Toggle theme">🌙</button>
+    <div style="display:flex;align-items:center;gap:8px">
+      <img id="avatarImg" src="" alt="avatar" style="width:36px;height:36px;border-radius:8px;object-fit:cover"/>
+      <div style="font-size:14px" id="topbarName">Student</div>
+    </div>
+  </div>
+</header>
+
+<section class="content-grid">
+  <!-- left column -->
+  <div>
+    <!-- Dashboard view -->
+    <div id="view-dashboard" class="panel view">
+      <div class="row" style="justify-content:space-between;align-items:flex-start">
+        <div>
+          <h2 style="margin:0 0 6px 0">Welcome back, <span id="greetName">Student</span> 👋</h2>
+          <div class="small">Here's your semester snapshot</div>
+        </div>
+        <div>
+          <small class="small" id="todayDate"></small>
+        </div>
+      </div>
+
+      <div class="cards" style="margin-top:16px">
+        <div class="card">
+          <h3>Active Courses</h3>
+          <p id="dashCourses">0</p>
+        </div>
+        <div class="card">
+          <h3>Unread Messages</h3>
+          <p id="dashMessages">0</p>
+        </div>
+        <div class="card">
+          <h3>Files Uploaded</h3>
+          <p id="dashFiles">0</p>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;margin-top:14px">
+        <div class="panel" style="flex:2">
+          <h3 style="margin:0">Course Progress</h3>
+          <div id="coursesList" class="list"></div>
+        </div>
+
+        <div class="panel" style="flex:1">
+          <h3 style="margin:0">Upcoming</h3>
+          <ul class="small" id="upcomingList" style="margin-top:10px"></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Courses -->
+    <div id="view-courses" class="panel view" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h2 style="margin:0">Courses</h2>
+        <input id="courseFilter" placeholder="Filter by id or title" style="padding:8px;border-radius:8px;border:1px solid rgba(15,23,42,0.06)"/>
+      </div>
+      <div id="coursesCatalog" class="list" style="margin-top:12px"></div>
+      <div style="margin-top:12px">
+        <button id="addCourseBtn" class="btn">Add Course</button>
+      </div>
+    </div>
+
+    <!-- Grades -->
+    <div id="view-grades" class="panel view" style="display:none">
+      <h2 style="margin:0 0 8px 0">Grades</h2>
+      <div>
+        <table>
+          <thead><tr><th>Course</th><th>Grade</th><th>Credits</th><th></th></tr></thead>
+          <tbody id="gradesTbody"></tbody>
+        </table>
+        <div style="margin-top:10px"><button id="saveGrades" class="btn">Save Grades</button></div>
+      </div>
+    </div>
+
+    <!-- Schedule -->
+    <div id="view-schedule" class="panel view" style="display:none">
+      <h2 style="margin:0 0 8px 0">Weekly Schedule</h2>
+      <div class="week" id="weekGrid"></div>
+    </div>
+
+    <!-- Messages -->
+    <div id="view-messages" class="panel view" style="display:none">
+      <h2 style="margin:0 0 8px 0">Messages</h2>
+      <div class="row" style="gap:12px">
+        <input id="msgFilter" placeholder="Filter by sender or text" style="flex:1;padding:8px;border-radius:8px;border:1px solid rgba(15,23,42,0.06)"/>
+        <button id="newMsgBtn" class="btn">New Message</button>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:12px">
+        <div style="flex:1">
+          <div id="messagesList" class="list"></div>
+        </div>
+        <div style="flex:1.2;display:flex;flex-direction:column;gap:10px">
+          <div class="chat" id="chatWindow"></div>
+          <div style="display:flex;gap:8px">
+            <input id="msgInput" placeholder="Write a message..." style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(15,23,42,0.06)"/>
+            <button id="sendMsg" class="btn">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Files -->
+    <div id="view-files" class="panel view" style="display:none">
+      <h2 style="margin:0 0 8px 0">Files</h2>
+      <input id="fileInput" type="file" multiple />
+      <div id="filesList" class="list" style="margin-top:12px"></div>
+    </div>
+
+    <!-- Profile -->
+    <div id="view-profile" class="panel view" style="display:none">
+      <h2 style="margin:0 0 8px 0">Profile</h2>
+      <div style="display:flex;gap:12px;align-items:center">
+        <img id="profileAvatar" src="" alt="profile" style="width:88px;height:88px;border-radius:12px;object-fit:cover"/>
+        <div style="flex:1">
+          <label class="small">Full name</label>
+          <input id="profileName" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(15,23,42,0.06);margin-top:6px"/>
+          <label class="small" style="margin-top:8px;display:block">Email</label>
+          <input id="profileEmail" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(15,23,42,0.06);margin-top:6px"/>
+          <div style="margin-top:10px">
+            <button id="saveProfile" class="btn">Save Profile</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- right column -->
+  <aside class="widget">
+    <div class="panel">
+      <h3 style="margin:0 0 6px 0">Today</h3>
+      <div class="small" id="todaySummary">No events</div>
+      <div style="height:12px"></div>
+      <h4 style="margin:0 0 6px 0">Weekly</h4>
+      <div id="miniWeek" class="week"></div>
+    </div>
+
+    <div class="panel">
+      <h3 style="margin:0 0 6px 0">Notifications</h3>
+      <div id="notifList" class="small">No notifications</div>
+    </div>
+
+    <div class="panel">
+      <h3 style="margin:0 0 6px 0">Quick Links</h3>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <button class="icon-btn">Grades report</button>
+        <button class="icon-btn">Submit request</button>
+        <button class="icon-btn">Help center</button>
+      </div>
+    </div>
+  </aside>
+</section>
+
+
+  </main>
+
+<script>
+/*
+  Student Portal — Functional front-end demo
+  - All primary features persist to localStorage.
+  - No backend required.
+*/
+
+/* ---------- DEFAULT DEMO DATA ---------- */
+const DEFAULT = {
+  user: { name: "Jamie Cruz", email: "jamie.cruz@student.edu", avatar: "https://ui-avatars.com/api/?name=Jamie+Cruz&background=random" },
+  courses: [
+    { id: "CS101", title: "Intro to Programming", instructor: "Dr. Santos", credits: 3, progress: 0.78 },
+    { id: "MATH201", title: "Calculus II", instructor: "Prof. Reyes", credits: 4, progress: 0.61 },
+    { id: "HIST100", title: "Philippine History", instructor: "A. Dela Cruz", credits: 2, progress: 0.92 }
+  ],
+  grades: [
+    { course: "CS101", grade: "A-", credits: 3 },
+    { course: "MATH201", grade: "B+", credits: 4 },
+    { course: "HIST100", grade: "A", credits: 2 }
+  ],
+  messages: [
+    { id: 1, from: "Prof. Reyes", text: "Reminder: post your solutions.", time: TimestampDays(-0.1) },
+    { id: 2, from: "Study Group", text: "Meeting tonight 7PM", time: TimestampDays(-0.5) }
+  ],
+  files: []
+};
+
+/* ---------- UTIL ---------- */
+function q(sel, el=document){return el.querySelector(sel)}
+function qAll(sel, el=document){return Array.from(el.querySelectorAll(sel))}
+function ts(){return new Date().toISOString()}
+function TimestampDays(n){ return new Date(Date.now() + n*24*60*60*1000).toISOString() }
+
+/* ---------- STORAGE KEYS ---------- */
+const KEY = {
+  USER: "sp_user_v1",
+  COURSES: "sp_courses_v1",
+  GRADES: "sp_grades_v1",
+  MESSAGES: "sp_messages_v1",
+  FILES: "sp_files_v1",
+  THEME: "sp_theme_v1",
+  UPCOMING: "sp_upcoming_v1"
+}
+
+/* ---------- APP STATE ---------- */
+let state = {
+  user: load(KEY.USER) || DEFAULT.user,
+  courses: load(KEY.COURSES) || DEFAULT.courses,
+  grades: load(KEY.GRADES) || DEFAULT.grades,
+  messages: load(KEY.MESSAGES) || DEFAULT.messages,
+  files: load(KEY.FILES) || DEFAULT.files,
+  upcoming: load(KEY.UPCOMING) || [
+    {text:"Quiz — MATH201", date: TimestampDays(4)},
+    {text:"Project draft — CS101", date: TimestampDays(7)},
+    {text:"Group study (Zoom)", date: TimestampDays(2)}
+  ]
+};
+
+/* ---------- BOOTSTRAP ---------- */
+document.addEventListener("DOMContentLoaded", init);
+
+function init(){
+  // wire nav
+  qAll("#nav button").forEach(btn=>{
+    btn.addEventListener("click", ()=>{ switchView(btn.dataset.view); setActiveNav(btn) })
+  });
+
+  // components
+  q("#globalSearch").addEventListener("input", globalSearch);
+  q("#courseFilter").addEventListener("input", renderCoursesCatalog);
+  q("#courseFilter").addEventListener("input", renderDashboardCourses);
+  q("#msgFilter").addEventListener("input", renderMessagesList);
+  q("#addCourseBtn").addEventListener("click", addCoursePrompt);
+  q("#saveGrades").addEventListener("click", saveGrades);
+  q("#newMsgBtn").addEventListener("click", ()=>{ q("#msgInput").value=""; q("#msgInput").focus(); });
+  q("#sendMsg").addEventListener("click", sendMessage);
+  q("#msgInput").addEventListener("keyup", e=>{ if(e.key==="Enter") sendMessage() });
+  q("#fileInput").addEventListener("change", handleFileUpload);
+  q("#saveProfile").addEventListener("click", saveProfile);
+  q("#profileAvatar").addEventListener("click", ()=> alert("Profile avatar is demo-only. Change name to update avatar generation."));
+  q("#themeToggle").addEventListener("click", toggleTheme);
+  q("#clearStorage").addEventListener("click", resetDemo);
+  q("#globalSearch").addEventListener("keyup", e=>{ if(e.key==="Enter") { /* noop */ }});
+
+  // load from state
+  applyUserToUI();
+  renderAll();
+  switchView("dashboard");
+
+  // theme
+  const savedTheme = localStorage.getItem(KEY.THEME) || "light";
+  if(savedTheme==="dark") document.body.classList.add("dark");
+  updateThemeIcon();
+
+  // show date
+  q("#todayDate").textContent = new Date().toLocaleString(undefined, { weekday: 'long', month:'short', day:'numeric' });
+
+  // mini-week
+  renderMiniWeek();
+}
+
+/* ---------- RENDERERS ---------- */
+function renderAll(){
+  renderDashboard();
+  renderCoursesCatalog();
+  renderGradesTable();
+  renderSchedule();
+  renderMessagesList();
+  renderFiles();
+  renderNotifications();
+}
+
+function renderDashboard(){
+  q("#dashCourses").textContent = state.courses.length;
+  q("#dashMessages").textContent = state.messages.length;
+  q("#dashFiles").textContent = state.files.length;
+  renderDashboardCourses();
+  renderUpcoming();
+  q("#greetName").textContent = state.user.name.split(" ")[0];
+}
+
+function renderDashboardCourses(){
+  const root = q("#coursesList");
+  root.innerHTML = "";
+  state.courses.forEach(c=>{
+    const div = document.createElement("div"); div.className="course-item";
+    const meta = document.createElement("div"); meta.className="course-meta";
+    const info = document.createElement("div"); info.innerHTML = `<div style="font-weight:700">${c.title}</div><div class="small">${c.id} • ${c.instructor}</div>`;
+    const progress = document.createElement("div");
+    progress.innerHTML = `<div class="progress" title="${Math.round(c.progress*100)}%"><i style="width:${Math.round(c.progress*100)}%"></i></div>`;
+    meta.appendChild(info); meta.appendChild(progress);
+    const actions = document.createElement("div");
+    const inc = document.createElement("button"); inc.textContent="+"; inc.className="icon-btn"; inc.style.marginRight="8px";
+    const dec = document.createElement("button"); dec.textContent="-"; dec.className="icon-btn";
+    inc.addEventListener("click", ()=> { c.progress = Math.min(1, c.progress + 0.05); save(KEY.COURSES, state.courses); renderAll(); });
+    dec.addEventListener("click", ()=> { c.progress = Math.max(0, c.progress - 0.05); save(KEY.COURSES, state.courses); renderAll(); });
+    actions.appendChild(inc); actions.appendChild(dec);
+
+    div.appendChild(meta); div.appendChild(actions);
+    root.appendChild(div);
+  });
+}
+
+function renderCoursesCatalog(){
+  const qstr = q("#courseFilter").value.trim().toLowerCase();
+  const root = q("#coursesCatalog");
+  root.innerHTML = "";
+  state.courses.filter(c=>{
+    if(!qstr) return true;
+    return c.id.toLowerCase().includes(qstr) || c.title.toLowerCase().includes(qstr) || c.instructor.toLowerCase().includes(qstr);
+  }).forEach(c=>{
+    const item = document.createElement("div"); item.className="course-item";
+    item.innerHTML = `<div style="display:flex;gap:12px;align-items:center">
+      <div style="width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,#8b5cf6,#06b6d4);display:flex;align-items:center;justify-content:center;color:white;font-weight:700">${c.id.slice(0,2)}</div>
+      <div>
+        <div style="font-weight:700">${c.title}</div>
+        <div class="small">${c.id} • ${c.instructor}</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end">
+      <div style="font-weight:700">${Math.round(c.progress*100)}%</div>
+      <div class="progress" style="width:120px;margin-top:6px"><i style="width:${Math.round(c.progress*100)}%"></i></div>
+      <div style="margin-top:8px"><button class="icon-btn" onclick="removeCourse('${c.id}')">Remove</button></div>
+    </div>`;
+    root.appendChild(item);
+  });
+}
+
+function renderGradesTable(){
+  const tbody = q("#gradesTbody");
+  tbody.innerHTML = "";
+  state.grades.forEach((g,i)=>{
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${g.course}</td>
+      <td><input class="grade-input" value="${g.grade}" data-idx="${i}" /></td>
